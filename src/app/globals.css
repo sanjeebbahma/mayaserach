@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Custom animations for MAYA logo */
+@keyframes letterBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.letter-bounce {
+  animation: letterBounce 2s ease-in-out infinite;
+}
+
+/* Floating particles animation */
+@keyframes float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-100vh) rotate(360deg);
+  }
+}
+
+.floating-particle {
+  position: absolute;
+  background: linear-gradient(135deg, #ba160a, #d41e10);
+  border-radius: 50%;
+  opacity: 0.1;
+  animation: float 20s infinite linear;
+}
+
+/* Enhanced hover effects */
+.app-card:hover {
+  transform: translateY(-5px);
+}
+
+.app-card:hover .app-box {
+  box-shadow: 0 10px 30px rgba(186, 22, 10, 0.3);
+}
+
+/* MAYA website style animations */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer-effect {
+  background: linear-gradient(90deg, transparent, rgba(186, 22, 10, 0.1), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Enhanced letter bounce with MAYA style */
+@keyframes letterBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  50% {
+    transform: translateY(-12px) scale(1.1);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.05);
+  }
+}
+
+.letter-bounce {
+  animation: letterBounce 2.5s ease-in-out infinite;
+  transition: all 0.3s ease;
+}
+
+.letter-bounce:hover {
+  color: #d41e10 !important;
+  transform: scale(1.2) rotate(5deg);
 }

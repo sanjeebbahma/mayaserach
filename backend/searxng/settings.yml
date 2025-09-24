@@ -1,0 +1,94 @@
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "MAYA Search Engine"
+  contact_url: ""
+  enable_metrics: false
+
+brand:
+  new_issue_url: "https://github.com/searxng/searxng/issues"
+  docs_url: "https://docs.searxng.org"
+  public_instances: "https://searx.space"
+  wiki_url: "https://github.com/searxng/searxng/wiki"
+  issue_url: "https://github.com/searxng/searxng/issues"
+
+search:
+  safe_search: 0
+  autocomplete: "google"
+  default_lang: "en"
+  ban_time_on_fail: 5
+  max_ban_time_on_fail: 120
+  formats:
+    - html
+    - json
+
+server:
+  port: 8080
+  bind_address: "0.0.0.0"
+  secret_key: "ac8d68bd8fdf4632957120c1b78d2f17f270195df04a6f1d0ce8da9638c30c1f"
+  base_url: ""
+  image_proxy: false
+  http_protocol_version: "1.0"
+  method: "GET"
+  limiter: false
+  public_instance: false
+
+ui:
+  static_use_hash: false
+  default_locale: "en"
+  query_in_title: false
+  infinite_scroll: false
+  center_alignment: false
+  cache_url: "https://web.archive.org/web/"
+  enable_suggestions: true
+
+preferences:
+  lock: []
+  block: []
+
+bot_detection:
+  enabled: false
+
+rate_limiter:
+  enabled: false
+
+outgoing:
+  request_timeout: 20.0
+  max_request_timeout: 60.0
+  useragent_suffix: "MAYA Search"
+  pool_connections: 100
+  pool_maxsize: 100
+  enable_http2: true
+  max_redirects: 5
+  retries: 3
+
+engines:
+  - name: bing
+    disabled: false
+  - name: brave
+    disabled: false
+  - name: duckduckgo
+    disabled: false
+  - name: google
+    disabled: false
+  - name: mojeek
+    disabled: false
+  - name: startpage
+    disabled: false
+  - name: wikipedia
+    disabled: false
+  - name: wikidata
+    disabled: false
+  - name: stackoverflow
+    disabled: false
+  - name: github
+    disabled: false
+  - name: reddit
+    disabled: false
+  - name: bing images
+    disabled: false
+  - name: duckduckgo images
+    disabled: false
+  - name: google images
+    disabled: false
