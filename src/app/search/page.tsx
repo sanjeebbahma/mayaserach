@@ -6,7 +6,7 @@ import { search, SearchResult, SearchResponse, SEARCH_CATEGORIES } from "@/lib/s
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import Footer from "@/components/Footer";
-import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook } from "lucide-react";
+import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook, Home } from "lucide-react";
 import StreamingText, { StreamingNumber } from "@/components/StreamingText";
 
 // Image result component for Images category
@@ -69,7 +69,7 @@ function ImageResultItem({ result, index, isLoading }: { result: SearchResult; i
           </div>
 
           <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
-            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">
               <StreamingText 
                 text={result.title} 
                 speed={20} 
@@ -95,7 +95,7 @@ function ImageResultItem({ result, index, isLoading }: { result: SearchResult; i
             href={result.url} 
             target="_blank" 
             rel="noopener noreferrer"
-            className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300"
+            className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300 cursor-pointer"
           >
             <span>View image</span>
             <ExternalLink className="w-3 h-3" />
@@ -173,7 +173,7 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
 
           {/* Title with streaming effect */}
           <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
-            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">
               {showContent ? (
                 <StreamingText 
                   text={result.title} 
@@ -208,7 +208,7 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
                 href={`https://${getDomainFromUrl(result.url)}`}
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1"
+                className="text-blue-600 hover:text-blue-700 text-sm font-medium flex items-center space-x-1 cursor-pointer"
               >
                 <span>More results from {getDomainFromUrl(result.url)}</span>
                 <ExternalLink className="w-3 h-3" />
@@ -222,7 +222,7 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
               href={result.url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300"
+              className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300 cursor-pointer"
             >
               <span>Visit site</span>
               <ExternalLink className="w-3 h-3" />
@@ -269,7 +269,7 @@ function SearchResultItem({ result, index, isLoading }: { result: SearchResult; 
 
           {/* Title with streaming effect */}
           <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
-            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">
               {showContent ? (
                 <StreamingText 
                   text={result.title} 
@@ -302,7 +302,7 @@ function SearchResultItem({ result, index, isLoading }: { result: SearchResult; 
               href={result.url} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300"
+              className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300 cursor-pointer"
             >
               <span>Visit site</span>
               <ExternalLink className="w-3 h-3" />
@@ -335,7 +335,7 @@ function CategoryNavigation({ currentCategory, onCategoryChange }: { currentCate
               <button
                 key={category.key}
                 onClick={() => onCategoryChange(category.key)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 whitespace-nowrap ${
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 whitespace-nowrap cursor-pointer ${
                   isActive
                     ? 'bg-red-50 text-red-700 border-b-2 border-red-600'
                     : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
@@ -496,16 +496,16 @@ function SearchPageContent() {
       <div className="bg-white/90 backdrop-blur-sm border-b border-red-100 sticky top-0 z-20 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4 flex-1">
+            <div className="flex items-center space-x-6 flex-1">
               <button 
                 onClick={() => router.push('/')}
-                className="text-red-600 hover:text-red-700 flex items-center space-x-2 group"
+                className="bg-red-600 hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center group flex-shrink-0 cursor-pointer"
+                title="Home"
               >
-                <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform duration-200" />
-                <span className="font-semibold">Home</span>
+                <Home className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
               </button>
               
-              <div className="flex-1 max-w-2xl">
+              <div className="flex-1 max-w-2xl h-12 flex items-center">
                 <SearchBar />
               </div>
             </div>
@@ -515,14 +515,14 @@ function SearchPageContent() {
               <div className="flex rounded-lg border border-gray-200 overflow-hidden">
                 <button
                   onClick={() => setViewMode('list')}
-                  className={`p-2 transition-colors duration-200 ${viewMode === 'list' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                  className={`p-2 transition-colors duration-200 cursor-pointer ${viewMode === 'list' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
                   title="List view"
                 >
                   <List className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setViewMode('grid')}
-                  className={`p-2 transition-colors duration-200 ${viewMode === 'grid' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+                  className={`p-2 transition-colors duration-200 cursor-pointer ${viewMode === 'grid' ? 'bg-red-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
                   title="Grid view"
                 >
                   <Grid className="w-4 h-4" />
@@ -633,7 +633,7 @@ function SearchPageContent() {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage <= 1}
-                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600"
+                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
@@ -649,7 +649,7 @@ function SearchPageContent() {
                   <button
                     key={page}
                     onClick={() => handlePageChange(page)}
-                    className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
                       page === currentPage
                         ? 'bg-red-600 text-white shadow-lg shadow-red-600/30'
                         : 'text-gray-700 hover:bg-red-50'
@@ -663,7 +663,7 @@ function SearchPageContent() {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage >= Math.max(5, Math.ceil(searchResults.totalResults / 15))}
-                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600"
+                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

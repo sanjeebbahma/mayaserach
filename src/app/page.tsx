@@ -24,7 +24,9 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 relative z-10">
         <MayaLogo />
-        <SearchBar />
+        <div className="w-full lg:w-1/2 max-w-2xl">
+          <SearchBar />
+        </div>
         <QuickAccess />
       </main>
 

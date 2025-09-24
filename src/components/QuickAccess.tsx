@@ -15,7 +15,7 @@ export default function QuickAccess() {
   ];
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full max-w-2xl mt-20">
       <h2 className="text-3xl font-bold text-center mb-6 relative" style={{ color: '#ba160a' }}>
         Quick Access
         <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-0.5" style={{ backgroundColor: '#ba160a' }}></div>
