@@ -123,11 +123,33 @@ export async function GET(request: NextRequest) {
 
     const data: SearchResponse = await response.json();
 
+    // Filter results to include Google, Wikipedia, and Wikidata engines, and exclude specific Quora links
+    const filteredResults = data.results.filter((result) => {
+      // Include Google, Wikipedia, and Wikidata engine results
+      if (!["google", "wikipedia", "wikidata"].includes(result.engine)) {
+        return false;
+      }
+
+      const url = result.url.toLowerCase();
+
+      // Exclude specific Quora links only
+      if (
+        url.includes("quora.com") &&
+        (url.includes("kaulantak-peeth") ||
+          url.includes("ishaputra") ||
+          url.includes("kaulantak_peeth"))
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
     // Transform the response for our frontend
     const transformedResults = {
       query: data.query,
-      totalResults: data.number_of_results,
-      results: data.results.map((result) => ({
+      totalResults: data.number_of_results, // Use original total results count
+      results: filteredResults.map((result) => ({
         title: result.title,
         url: result.url,
         content: result.content,

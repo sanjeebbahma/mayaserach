@@ -2,9 +2,11 @@
 
 import { Search, Mic, X } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import { getSuggestions } from "@/lib/search";
 
 export default function SearchBar() {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -13,7 +15,7 @@ export default function SearchBar() {
   
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
-  const debounceRef = useRef<NodeJS.Timeout>();
+  const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   // Debounced function to fetch suggestions
   const fetchSuggestions = useCallback(async (query: string) => {
@@ -60,6 +62,7 @@ export default function SearchBar() {
     return () => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
+        debounceRef.current = null;
       }
     };
   }, [searchValue, fetchSuggestions]);
@@ -143,8 +146,8 @@ export default function SearchBar() {
     const searchQuery = query || searchValue;
     if (searchQuery.trim()) {
       console.log("Searching for:", searchQuery);
-      // TODO: Navigate to search results page or trigger search
-      // For now, just close suggestions
+      // Navigate to search results page
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setShowSuggestions(false);
     }
   };

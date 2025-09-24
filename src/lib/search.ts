@@ -158,7 +158,9 @@ export async function getSuggestions(
   console.log("Raw suggestions value:", data.suggestions);
 
   // Parse and clean suggestions data
-  let suggestions = data.suggestions || [];
+  let suggestions: any[] = Array.isArray(data.suggestions)
+    ? data.suggestions
+    : [];
 
   // Handle different response formats
   if (Array.isArray(suggestions) && suggestions.length > 1) {
@@ -167,10 +169,10 @@ export async function getSuggestions(
       suggestions = suggestions[1];
       console.log("Extracted suggestions from nested array:", suggestions);
     }
-  } else if (typeof suggestions === "string") {
-    console.log("Splitting string suggestions:", suggestions);
+  } else if (typeof data.suggestions === "string") {
+    console.log("Splitting string suggestions:", data.suggestions);
     // Split by comma and clean each suggestion
-    suggestions = suggestions
+    suggestions = (data.suggestions as string)
       .split(",")
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
