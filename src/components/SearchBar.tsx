@@ -195,10 +195,10 @@ export default function SearchBar() {
   }, []);
 
   return (
-    <div className="w-full">
+    <div className="w-full min-w-0">
       <div className="relative">
-        <div className="flex items-center border-3 rounded-full px-3 sm:px-4 py-2 sm:py-2.5 bg-white shadow-lg hover:shadow-xl transition-all duration-300" style={{ borderColor: '#ba160a' }}>
-          <Search className="w-5 h-5 mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
+        <div className="flex items-center border-3 rounded-full px-2 sm:px-4 py-1.5 sm:py-2.5 bg-white shadow-lg hover:shadow-xl transition-all duration-300" style={{ borderColor: '#ba160a' }}>
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
           <input
             ref={inputRef}
             type="text"
@@ -207,32 +207,32 @@ export default function SearchBar() {
             onKeyDown={handleKeyDown}
             onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
             placeholder="Search the web, images, videos, news and more..."
-            className="flex-1 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-lg"
+            className="flex-1 min-w-0 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-base sm:text-lg"
             autoComplete="off"
           />
           {searchValue && (
             <button 
               onClick={clearSearch}
-              className="ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
+              className="ml-1 sm:ml-2 p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
               title="Clear search"
             >
-              <X className="w-4 h-4 text-gray-400" />
+              <X className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
             </button>
           )}
           <button 
             onClick={() => handleSearch()}
-            className="ml-4 p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
+            className="ml-2 sm:ml-4 p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
             title="Voice search"
           >
-            <Mic className="w-5 h-5" style={{ color: '#ba160a' }} />
+            <Mic className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#ba160a' }} />
           </button>
           <button 
             onClick={() => handleSearch()}
-            className="ml-2 text-white p-2 rounded-full transition-all duration-300 flex-shrink-0 hover:scale-110 cursor-pointer" 
+            className="ml-1 sm:ml-2 text-white p-1 sm:p-2 rounded-full transition-all duration-300 flex-shrink-0 hover:scale-110 cursor-pointer" 
             style={{ backgroundColor: '#ba160a' }}
             title="Search"
           >
-            <Search className="w-5 h-5" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
@@ -251,8 +251,8 @@ export default function SearchBar() {
               backdropFilter: 'blur(20px)',
             }}
           >
-            {/* Enhanced Header Section */}
-            <div className="px-5 py-3 bg-gradient-to-r from-red-500/10 via-pink-500/10 to-red-500/10 border-b border-red-200/50 relative">
+            {/* Enhanced Header Section - Hidden on mobile */}
+            <div className="hidden sm:block px-5 py-3 bg-gradient-to-r from-red-500/10 via-pink-500/10 to-red-500/10 border-b border-red-200/50 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-pink-500/5"></div>
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center">
@@ -306,8 +306,8 @@ export default function SearchBar() {
                             <Search className="w-3 h-3 mr-1.5" />
                             Search suggestion
                           </span>
-                          <span className="text-gray-400">•</span>
-                          <span className="text-gray-600 font-medium">Press Enter to search</span>
+                          <span className="hidden sm:inline text-gray-400">•</span>
+                          <span className="hidden sm:inline text-gray-600 font-medium">Press Enter to search</span>
                         </div>
                       </div>
                       
@@ -339,8 +339,8 @@ export default function SearchBar() {
               </ul>
             </div>
             
-            {/* Enhanced Footer Section */}
-            <div className="px-5 py-3 bg-gradient-to-r from-red-50/60 via-pink-50/60 to-red-50/60 border-t border-red-200/50 relative">
+            {/* Enhanced Footer Section - Hidden on mobile */}
+            <div className="hidden sm:block px-5 py-3 bg-gradient-to-r from-red-50/60 via-pink-50/60 to-red-50/60 border-t border-red-200/50 relative">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500/5 to-pink-500/5"></div>
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center text-xs text-gray-600">

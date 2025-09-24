@@ -494,8 +494,24 @@ function SearchPageContent() {
 
       {/* Search header with compact SearchBar */}
       <div className="bg-white/90 backdrop-blur-sm border-b border-red-100 sticky top-0 z-20 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 sm:py-4">
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center space-x-2 w-full">
+            <button 
+              onClick={() => router.push('/')}
+              className="bg-red-600 hover:bg-red-700 text-white w-10 h-10 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center group flex-shrink-0 cursor-pointer"
+              title="Home"
+            >
+              <Home className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+            </button>
+            
+            <div className="flex-1 min-w-0 h-8 flex items-center">
+              <SearchBar />
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
             <div className="flex items-center space-x-6 flex-1">
               <button 
                 onClick={() => router.push('/')}
@@ -510,8 +526,8 @@ function SearchPageContent() {
               </div>
             </div>
 
-            {/* Search controls */}
-            <div className="flex items-center space-x-2 ml-4">
+            {/* Search controls - Hidden on desktop */}
+            <div className="hidden">
               <div className="flex rounded-lg border border-gray-200 overflow-hidden">
                 <button
                   onClick={() => setViewMode('list')}
@@ -530,7 +546,6 @@ function SearchPageContent() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
