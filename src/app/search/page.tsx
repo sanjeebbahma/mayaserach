@@ -142,8 +142,13 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
   const isMainResult = index === 0;
 
   return (
-    <div className={`group transition-all duration-500 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+    <div className={`group transition-all duration-500 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'} ${result.isInfobox ? 'ring-2 ring-purple-300 bg-gradient-to-r from-purple-50 to-blue-50 rounded-xl p-4 shadow-lg' : ''}`}>
       <div className="relative">
+        {result.isInfobox && (
+          <div className="absolute -top-3 -right-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs px-3 py-1 rounded-full font-bold z-10 shadow-lg animate-bounce">
+            📚 WIKI
+          </div>
+        )}
         <div>
           {/* URL and domain */}
           <div className="flex items-center space-x-2 mb-2">
@@ -159,7 +164,10 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
               {result.engine === 'wikidata' && (
                 <div className="bg-blue-100 text-blue-700 text-xs px-2 py-0.5 rounded-full font-medium">Wikidata</div>
               )}
-              {!['wikipedia', 'wikidata', 'google'].includes(result.engine) && (
+              {result.isInfobox && (
+                <div className="bg-purple-100 text-purple-700 text-xs px-2 py-0.5 rounded-full font-medium animate-pulse">📚 Wikipedia</div>
+              )}
+              {!['wikipedia', 'wikidata', 'google'].includes(result.engine) && !result.isInfobox && (
                 <div className="bg-gray-100 text-gray-700 text-xs px-2 py-0.5 rounded-full font-medium">{result.engine}</div>
               )}
             </div>
@@ -189,15 +197,32 @@ function GoogleStyleResultItem({ result, index, isLoading }: { result: SearchRes
 
           {/* Content with streaming effect */}
           {showContent && (
-            <p className="text-gray-700 leading-relaxed mb-4 line-clamp-3">
-              <StreamingText 
-                text={result.content} 
-                speed={8} 
-                delay={300}
-                streamType="typewriter"
-                showCursor={false}
-              />
-            </p>
+            <div className="text-gray-700 leading-relaxed mb-4">
+              <p className="line-clamp-3">
+                <StreamingText 
+                  text={result.content} 
+                  speed={8} 
+                  delay={300}
+                  streamType="typewriter"
+                  showCursor={false}
+                />
+              </p>
+              
+              {/* Show infobox attributes if available */}
+              {result.isInfobox && result.attributes && (
+                <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                  <h4 className="text-sm font-semibold text-purple-800 mb-2">Key Information</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {result.attributes.slice(0, 6).map((attr: any, idx: number) => (
+                      <div key={idx} className="text-xs">
+                        <span className="font-medium text-purple-700">{attr.label}:</span>
+                        <span className="text-gray-700 ml-1">{attr.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
 

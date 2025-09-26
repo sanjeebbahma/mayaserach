@@ -32,6 +32,10 @@ interface SearchResult {
   pretty_url: string;
   open_group: boolean;
   close_group: boolean;
+  isInfobox?: boolean;
+  attributes?: any[];
+  imgSrc?: string;
+  urls?: any[];
 }
 
 interface SearchResponse {
@@ -145,11 +149,26 @@ export async function GET(request: NextRequest) {
       return true;
     });
 
-    // Transform the response for our frontend
-    const transformedResults = {
-      query: data.query,
-      totalResults: data.number_of_results, // Use original total results count
-      results: filteredResults.map((result) => ({
+    // Process infoboxes to include Wikipedia/Wikidata data
+    const infoboxResults =
+      data.infoboxes?.map((infobox) => ({
+        title: infobox.title || infobox.infobox,
+        url: infobox.url || infobox.id,
+        content: infobox.content,
+        engine: infobox.engine || "wikipedia",
+        category: "general",
+        prettyUrl: infobox.url || infobox.id,
+        score: infobox.score || 0,
+        isInfobox: true,
+        attributes: infobox.attributes,
+        imgSrc: infobox.img_src,
+        urls: infobox.urls,
+      })) || [];
+
+    // Combine regular results with infobox results, prioritizing infoboxes
+    const allResults = [
+      ...infoboxResults, // Put infobox results first
+      ...filteredResults.map((result) => ({
         title: result.title,
         url: result.url,
         content: result.content,
@@ -157,7 +176,15 @@ export async function GET(request: NextRequest) {
         category: result.category,
         prettyUrl: result.pretty_url,
         score: result.score,
+        isInfobox: false,
       })),
+    ];
+
+    // Transform the response for our frontend
+    const transformedResults = {
+      query: data.query,
+      totalResults: data.number_of_results, // Use original total results count
+      results: allResults,
       answers: data.answers,
       corrections: data.corrections,
       suggestions: data.suggestions,

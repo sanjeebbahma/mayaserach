@@ -18,6 +18,10 @@ export interface SearchResult {
   category: string;
   prettyUrl: string;
   score: number;
+  isInfobox?: boolean;
+  attributes?: any[];
+  imgSrc?: string;
+  urls?: any[];
 }
 
 export interface SearchResponse {
