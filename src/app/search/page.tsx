@@ -9,6 +9,105 @@ import Footer from "@/components/Footer";
 import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook, Home, X } from "lucide-react";
 import StreamingText, { StreamingNumber } from "@/components/StreamingText";
 
+// Video result component for Videos category
+function VideoResultItem({ result, index, isLoading }: { 
+  result: SearchResult; 
+  index: number; 
+  isLoading: boolean;
+}) {
+  const [isVisible, setIsVisible] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, index * 100);
+    return () => clearTimeout(timer);
+  }, [index]);
+
+  const getDomainFromUrl = (url: string) => {
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch {
+      return url;
+    }
+  };
+
+  // Don't render if image has error
+  if (imageError) {
+    return null;
+  }
+
+  return (
+    <div className={`group transition-all duration-500 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+      <div className="flex gap-4 p-4 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+        {/* Thumbnail on the left - bigger and clickable */}
+        <div 
+          className="flex-shrink-0 w-48 h-32 bg-gray-100 rounded-lg overflow-hidden cursor-pointer relative group/thumb"
+          onClick={() => window.open(result.url, '_blank', 'noopener,noreferrer')}
+        >
+          {(result.imgSrc || result.thumbnailSrc || result.thumbnail) && (
+            <img
+              src={result.imgSrc || result.thumbnailSrc || result.thumbnail}
+              alt={result.title}
+              className="w-full h-full object-cover group-hover/thumb:scale-105 transition-transform duration-300"
+              onError={() => setImageError(true)}
+            />
+          )}
+          {!result.imgSrc && !result.thumbnailSrc && !result.thumbnail && (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <Play className="w-12 h-12 text-gray-400" />
+            </div>
+          )}
+          
+          {/* Play overlay on hover */}
+          <div className="absolute inset-0 bg-black/0 group-hover/thumb:bg-black/30 transition-all duration-300 flex items-center justify-center">
+            <div className="opacity-0 group-hover/thumb:opacity-100 transition-opacity duration-300">
+              <div className="w-12 h-12 bg-red-600 rounded-full flex items-center justify-center">
+                <Play className="w-6 h-6 text-white ml-1" />
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Content on the right */}
+        <div className="flex-1 min-w-0">
+          {/* URL and domain */}
+          <div className="flex items-center space-x-2 mb-2">
+            <Globe className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span className="text-sm text-green-700 font-medium truncate">
+              {getDomainFromUrl(result.url)}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
+            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">
+              {result.title}
+            </a>
+          </h3>
+
+          {/* Content */}
+          <p className="text-gray-700 text-sm line-clamp-2 mb-3">
+            {result.content}
+          </p>
+
+          {/* Visit link */}
+          <a 
+            href={result.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300 cursor-pointer"
+          >
+            <span>Watch video</span>
+            <ExternalLink className="w-3 h-3" />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // Image result component for Images category
 function ImageResultItem({ result, index, isLoading, onImageClick }: { 
   result: SearchResult; 
@@ -543,9 +642,12 @@ function SearchPageContent() {
     setError(null);
 
     try {
+      // For general category, always request page 1 to get all results
+      const requestPage = category === SEARCH_CATEGORIES.GENERAL ? 1 : page;
+      
       const results = await search({
         q: searchQuery.trim(),
-        pageno: page,
+        pageno: requestPage,
         categories: category,
         // Remove engine restriction to allow all engines
         language: 'en',
@@ -767,6 +869,13 @@ function SearchPageContent() {
                   isLoading={isLoading}
                   onImageClick={handleImageClick}
                 />
+              ) : category === SEARCH_CATEGORIES.VIDEOS ? (
+                <VideoResultItem 
+                  key={`${result.url}-${index}`} 
+                  result={result} 
+                  index={index}
+                  isLoading={isLoading}
+                />
               ) : category === SEARCH_CATEGORIES.GENERAL ? (
                 <GoogleStyleResultItem 
                   key={`${result.url}-${index}`} 
@@ -782,7 +891,7 @@ function SearchPageContent() {
                   isLoading={isLoading}
                 />
               )
-                ))}
+            ))}
               </div>
             )}
 

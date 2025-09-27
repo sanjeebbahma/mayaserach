@@ -129,9 +129,14 @@ export async function GET(request: NextRequest) {
 
     const data: SearchResponse = await response.json();
 
-    // Filter results to exclude only specific Quora links, allow all other engines
+    // Filter results to exclude specific domains and links
     const filteredResults = data.results.filter((result) => {
       const url = result.url.toLowerCase();
+
+      // Exclude nlnworld.newslivenow.tv domain completely
+      if (url.includes("nlnworld.newslivenow.tv")) {
+        return false;
+      }
 
       // Exclude specific Quora links only
       if (
