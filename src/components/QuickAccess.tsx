@@ -22,7 +22,7 @@ export default function QuickAccess() {
     { name: "Sambhala Radio", icon: "/apps/sambhalaradio.png", url: "https://sambhalasamrajyaradio.com/" },
     { name: "IKSVP", icon: "/apps/iksvp.jpg", url: "https://iksvp.com/" },
     { name: "Kaulantak Peeth", icon: "/apps/kaulantakpeeth.jpg", url: "http://kaulantakpeeth.com/" },
-    { name: "Coming Soon", icon: null, url: null, comingSoon: true }
+    { name: "Kurukulla Temple", icon: "/apps/kurukullaTemple.jpg", url: "https://goddesskurukulla.com/" }
   ];
 
   const handleAppClick = (app: typeof apps[0]) => {
