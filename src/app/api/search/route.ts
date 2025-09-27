@@ -34,7 +34,9 @@ interface SearchResult {
   close_group: boolean;
   isInfobox?: boolean;
   attributes?: any[];
-  imgSrc?: string;
+  img_src?: string;
+  thumbnail_src?: string;
+  thumbnail?: string;
   urls?: any[];
 }
 
@@ -172,6 +174,9 @@ export async function GET(request: NextRequest) {
         prettyUrl: result.pretty_url,
         score: result.score,
         isInfobox: false,
+        imgSrc: result.img_src,
+        thumbnailSrc: result.thumbnail_src,
+        thumbnail: result.thumbnail,
       })),
     ];
 

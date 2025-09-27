@@ -6,13 +6,18 @@ import { search, SearchResult, SearchResponse, SEARCH_CATEGORIES } from "@/lib/s
 import Header from "@/components/Header";
 import SearchBar from "@/components/SearchBar";
 import Footer from "@/components/Footer";
-import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook, Home } from "lucide-react";
+import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook, Home, X } from "lucide-react";
 import StreamingText, { StreamingNumber } from "@/components/StreamingText";
 
 // Image result component for Images category
-function ImageResultItem({ result, index, isLoading }: { result: SearchResult; index: number; isLoading: boolean }) {
+function ImageResultItem({ result, index, isLoading, onImageClick }: { 
+  result: SearchResult; 
+  index: number; 
+  isLoading: boolean;
+  onImageClick: (result: SearchResult) => void;
+}) {
   const [isVisible, setIsVisible] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -29,77 +34,165 @@ function ImageResultItem({ result, index, isLoading }: { result: SearchResult; i
     }
   };
 
+  // Don't render if image has error
+  if (imageError) {
+    return null;
+  }
+
   return (
     <div className={`group transition-all duration-500 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-      <div className="relative">
-        {/* Image container */}
-        <div className="relative aspect-video bg-gray-100 overflow-hidden rounded-lg">
-          {result.url && (
-            <img
-              src={result.url}
-              alt={result.title}
-              className={`w-full h-full object-cover transition-opacity duration-300 ${
-                imageLoaded ? 'opacity-100' : 'opacity-0'
-              }`}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(false)}
-            />
-          )}
-          {!imageLoaded && (
-            <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
-              <div className="w-12 h-12 border-4 border-red-200 border-t-red-600 rounded-full animate-spin"></div>
-            </div>
-          )}
-          
-          {/* Overlay on hover */}
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <ExternalLink className="w-8 h-8 text-white" />
-            </div>
+      {/* Image container only - no titles or descriptions */}
+      <div 
+        className="relative aspect-square bg-gray-100 overflow-hidden rounded-lg cursor-pointer"
+        onClick={() => onImageClick(result)}
+      >
+        {(result.imgSrc || result.thumbnailSrc || result.url) && (
+          <img
+            src={result.imgSrc || result.thumbnailSrc || result.url}
+            alt={result.title}
+            className="w-full h-full object-cover"
+            onError={() => setImageError(true)}
+          />
+        )}
+        
+        {/* Overlay on hover */}
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <ExternalLink className="w-6 h-6 text-white" />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Image popup/modal component
+function ImagePopup({ 
+  selectedImage, 
+  isOpen, 
+  onClose, 
+  onPrevious, 
+  onNext, 
+  hasPrevious, 
+  hasNext 
+}: { 
+  selectedImage: SearchResult | null;
+  isOpen: boolean;
+  onClose: () => void;
+  onPrevious: () => void;
+  onNext: () => void;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}) {
+  if (!isOpen || !selectedImage) return null;
+
+  const getDomainFromUrl = (url: string) => {
+    try {
+      return new URL(url).hostname.replace('www.', '');
+    } catch {
+      return url;
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* Backdrop */}
+      <div 
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      
+      {/* Modal */}
+      <div className="relative w-full max-w-4xl mx-4 bg-gray-800 rounded-2xl shadow-2xl max-h-[90vh] overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full hover:bg-gray-700 transition-colors"
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={onPrevious}
+              disabled={!hasPrevious}
+              className="p-2 rounded-full hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5 text-white" />
+            </button>
+            <button
+              onClick={onNext}
+              disabled={!hasNext}
+              className="p-2 rounded-full hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronRight className="w-5 h-5 text-white" />
+            </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="mt-3">
-          <div className="flex items-center space-x-2 mb-2">
-            <Globe className="w-4 h-4 text-red-600 flex-shrink-0" />
-            <span className="text-sm text-green-700 font-medium truncate">
-              {getDomainFromUrl(result.url)}
-            </span>
+        <div className="flex flex-col lg:flex-row max-h-[calc(90vh-80px)]">
+          {/* Image Section */}
+          <div className="flex-1 p-4 lg:p-6">
+            <div className="relative w-full h-64 lg:h-96 bg-gray-700 rounded-lg overflow-hidden">
+              {(selectedImage.imgSrc || selectedImage.thumbnailSrc || selectedImage.url) && (
+                <img
+                  src={selectedImage.imgSrc || selectedImage.thumbnailSrc || selectedImage.url}
+                  alt={selectedImage.title}
+                  className="w-full h-full object-contain"
+                />
+              )}
+            </div>
           </div>
 
-          <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
-            <a href={result.url} target="_blank" rel="noopener noreferrer" className="hover:underline cursor-pointer">
-              <StreamingText 
-                text={result.title} 
-                speed={20} 
-                streamType="typewriter"
-                showCursor={false}
-              />
-            </a>
-          </h3>
+          {/* Details Section */}
+          <div className="flex-1 p-4 lg:p-6 lg:border-l border-gray-700 overflow-y-auto">
+            <div className="space-y-4 text-white">
+              <h3 className="text-lg lg:text-xl font-medium leading-relaxed">
+                {selectedImage.title}
+              </h3>
+              
+              {selectedImage.content && (
+                <p className="text-sm lg:text-base text-gray-300 leading-relaxed">
+                  {selectedImage.content}
+                </p>
+              )}
 
-          {result.content && (
-            <p className="text-gray-700 text-sm leading-relaxed mb-3 line-clamp-2">
-              <StreamingText 
-                text={result.content} 
-                speed={8} 
-                delay={300}
-                streamType="typewriter"
-                showCursor={false}
-              />
-            </p>
-          )}
+              {/* Metadata */}
+              <div className="space-y-2 text-sm text-gray-400">
+                <div>Resolution: 1500 x 900</div>
+                <div>Format: jpeg</div>
+                <div>Filesize: 1004.73 KB</div>
+                <div>Engine: {selectedImage.engine}</div>
+              </div>
 
-          <a 
-            href={result.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-red-600 hover:text-red-700 text-sm font-medium flex items-center space-x-1 group-hover:translate-x-1 transition-transform duration-300 cursor-pointer"
-          >
-            <span>View image</span>
-            <ExternalLink className="w-3 h-3" />
-          </a>
+              {/* View source link */}
+              <div className="pt-4">
+                <div className="text-sm text-gray-400 mb-2">View source:</div>
+                <a
+                  href={selectedImage.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-400 hover:text-blue-300 text-sm break-all"
+                >
+                  {selectedImage.url}
+                </a>
+              </div>
+
+              {/* Visit button */}
+              <div className="pt-4">
+                <a
+                  href={selectedImage.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                >
+                  <span>Visit Image</span>
+                  <ExternalLink className="w-4 h-4 ml-2" />
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -433,6 +526,11 @@ function SearchPageContent() {
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   
+  // Image sidebar state
+  const [selectedImage, setSelectedImage] = useState<SearchResult | null>(null);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(-1);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   const query = searchParams.get('q') || '';
   const category = searchParams.get('category') || SEARCH_CATEGORIES.GENERAL;
   const pageParam = searchParams.get('page');
@@ -454,10 +552,10 @@ function SearchPageContent() {
         safesearch: 1
       });
 
-      // Use results as-is, filtering will be handled in API route
+      // Use results as-is, show all results without limiting
       const filteredResults = {
         ...results,
-        results: results.results.slice(0, 15), // Limit to 15 results per page
+        results: results.results, // Show all results
         totalResults: results.totalResults // Use actual total results count from API
       };
 
@@ -500,6 +598,38 @@ function SearchPageContent() {
 
   const formatSearchTime = (time: number) => {
     return time < 1000 ? `${time}ms` : `${(time / 1000).toFixed(2)}s`;
+  };
+
+  // Image sidebar handlers
+  const handleImageClick = (result: SearchResult) => {
+    const imageResults = searchResults?.results.filter(r => r.category === 'images') || [];
+    const index = imageResults.findIndex(r => r.url === result.url);
+    setSelectedImage(result);
+    setSelectedImageIndex(index);
+    setIsSidebarOpen(true);
+  };
+
+  const handleCloseSidebar = () => {
+    setIsSidebarOpen(false);
+    setSelectedImage(null);
+    setSelectedImageIndex(-1);
+  };
+
+  const handlePreviousImage = () => {
+    if (!searchResults || selectedImageIndex <= 0) return;
+    const imageResults = searchResults.results.filter(r => r.category === 'images');
+    const newIndex = selectedImageIndex - 1;
+    setSelectedImage(imageResults[newIndex]);
+    setSelectedImageIndex(newIndex);
+  };
+
+  const handleNextImage = () => {
+    if (!searchResults) return;
+    const imageResults = searchResults.results.filter(r => r.category === 'images');
+    if (selectedImageIndex >= imageResults.length - 1) return;
+    const newIndex = selectedImageIndex + 1;
+    setSelectedImage(imageResults[newIndex]);
+    setSelectedImageIndex(newIndex);
   };
 
   return (
@@ -598,34 +728,36 @@ function SearchPageContent() {
           </div>
         )}
 
-        {/* Loading skeletons */}
-        {isLoading && (
-          <div className={`w-full lg:w-3/5 ${
-            category === SEARCH_CATEGORIES.IMAGES 
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
-              : viewMode === 'grid' 
-                ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
-                : 'space-y-6'
-          }`}>
-            {Array.from({ length: 15 }).map((_, index) => (
-              <SearchResultSkeleton 
-                key={index} 
-                index={index} 
-                isImage={category === SEARCH_CATEGORIES.IMAGES}
-              />
-            ))}
-          </div>
-        )}
+        {/* Main content area */}
+        <div>
+            {/* Loading skeletons */}
+            {isLoading && (
+              <div className={`${
+                category === SEARCH_CATEGORIES.IMAGES 
+                  ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4' 
+                  : 'w-full lg:w-3/5 ' + (viewMode === 'grid' 
+                    ? 'grid grid-cols-1 md:grid-cols-2 gap-6' 
+                    : 'space-y-6')
+              }`}>
+                {Array.from({ length: 50 }).map((_, index) => (
+                  <SearchResultSkeleton 
+                    key={index} 
+                    index={index} 
+                    isImage={category === SEARCH_CATEGORIES.IMAGES}
+                  />
+                ))}
+              </div>
+            )}
 
-        {/* Search results */}
-        {searchResults && !isLoading && searchResults.results.length > 0 && (
-          <div className={`w-full lg:w-3/5 ${
-            category === SEARCH_CATEGORIES.IMAGES 
-              ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' 
-              : viewMode === 'grid' 
-                ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
-                : 'space-y-6'
-          }`}>
+            {/* Search results */}
+            {searchResults && !isLoading && searchResults.results.length > 0 && (
+              <div className={`${
+                category === SEARCH_CATEGORIES.IMAGES 
+                  ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4' 
+                  : 'w-full lg:w-3/5 ' + (viewMode === 'grid' 
+                    ? 'grid grid-cols-1 lg:grid-cols-2 gap-6' 
+                    : 'space-y-6')
+              }`}>
             {searchResults.results.map((result, index) => (
               category === SEARCH_CATEGORIES.IMAGES ? (
                 <ImageResultItem 
@@ -633,6 +765,7 @@ function SearchPageContent() {
                   result={result} 
                   index={index}
                   isLoading={isLoading}
+                  onImageClick={handleImageClick}
                 />
               ) : category === SEARCH_CATEGORIES.GENERAL ? (
                 <GoogleStyleResultItem 
@@ -649,69 +782,82 @@ function SearchPageContent() {
                   isLoading={isLoading}
                 />
               )
-            ))}
-          </div>
-        )}
+                ))}
+              </div>
+            )}
 
-        {/* No results */}
-        {searchResults && !isLoading && searchResults.results.length === 0 && (
-          <div className="text-center py-16 animate-in fade-in duration-500">
-            <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Globe className="w-12 h-12 text-red-600" />
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">No results found</h3>
-            <p className="text-gray-600 max-w-md mx-auto">
-              Try adjusting your search terms or check the spelling. You can also try different search categories.
-            </p>
-          </div>
-        )}
+            {/* No results */}
+            {searchResults && !isLoading && searchResults.results.length === 0 && (
+              <div className="text-center py-16 animate-in fade-in duration-500">
+                <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Globe className="w-12 h-12 text-red-600" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No results found</h3>
+                <p className="text-gray-600 max-w-md mx-auto">
+                  Try adjusting your search terms or check the spelling. You can also try different search categories.
+                </p>
+              </div>
+            )}
 
-        {/* Pagination - Always show at least 5 pages for testing */}
-        {searchResults && !isLoading && searchResults.results.length > 0 && (
-          <div className="flex flex-col items-center mt-12">
-            <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-red-100">
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage <= 1}
-                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              
-              {/* Always show at least 5 pages */}
-              {Array.from({ length: 5 }, (_, i) => {
-                const page = Math.max(1, currentPage - 2) + i;
-                // Ensure we always show at least 5 pages
-                const maxPages = Math.max(5, Math.ceil(searchResults.totalResults / 15));
-                if (page > maxPages) return null;
-                
-                return (
+            {/* Pagination - Always show at least 5 pages for testing */}
+            {searchResults && !isLoading && searchResults.results.length > 0 && (
+              <div className="flex flex-col items-center mt-12">
+                <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-red-100">
                   <button
-                    key={page}
-                    onClick={() => handlePageChange(page)}
-                    className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
-                      page === currentPage
-                        ? 'bg-red-600 text-white shadow-lg shadow-red-600/30'
-                        : 'text-gray-700 hover:bg-red-50'
-                    }`}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage <= 1}
+                    className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
                   >
-                    {page}
+                    <ChevronLeft className="w-5 h-5" />
                   </button>
-                );
-              })}
-              
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage >= Math.max(5, Math.ceil(searchResults.totalResults / 15))}
-                className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
-            
-          </div>
-        )}
+                  
+                  {/* Show pages based on actual results */}
+                  {Array.from({ length: 5 }, (_, i) => {
+                    const page = Math.max(1, currentPage - 2) + i;
+                    // Calculate max pages based on actual results
+                    const maxPages = Math.max(5, Math.ceil(searchResults.totalResults / 50));
+                    if (page > maxPages) return null;
+                    
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => handlePageChange(page)}
+                        className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 cursor-pointer ${
+                          page === currentPage
+                            ? 'bg-red-600 text-white shadow-lg shadow-red-600/30'
+                            : 'text-gray-700 hover:bg-red-50'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage >= Math.max(5, Math.ceil(searchResults.totalResults / 50))}
+                    className="p-3 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-red-50 text-red-600 cursor-pointer"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+            )}
+        </div>
       </main>
+
+      {/* Image Popup - only show for image category */}
+      {category === SEARCH_CATEGORIES.IMAGES && (
+        <ImagePopup
+          selectedImage={selectedImage}
+          isOpen={isSidebarOpen}
+          onClose={handleCloseSidebar}
+          onPrevious={handlePreviousImage}
+          onNext={handleNextImage}
+          hasPrevious={selectedImageIndex > 0}
+          hasNext={selectedImageIndex < (searchResults?.results.filter(r => r.category === 'images').length || 0) - 1}
+        />
+      )}
 
       <Footer />
     </div>

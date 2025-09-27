@@ -21,6 +21,8 @@ export interface SearchResult {
   isInfobox?: boolean;
   attributes?: any[];
   imgSrc?: string;
+  thumbnailSrc?: string;
+  thumbnail?: string;
   urls?: any[];
 }
 
