@@ -18,6 +18,11 @@ export const metadata: Metadata = {
   keywords: "search engine, web search, Maya search, private search, fast search, image search, video search",
   authors: [{ name: "Maya Search Engine" }],
   robots: "index, follow",
+  icons: {
+    icon: "/favicon.jpg",
+    shortcut: "/favicon.jpg",
+    apple: "/favicon.jpg",
+  },
   openGraph: {
     title: "Maya Search Engine - Fast, Private & Comprehensive Web Search",
     description: "Maya Search Engine provides fast, private, and comprehensive web search results. Search the web with advanced filtering, image search, video search, and more.",
