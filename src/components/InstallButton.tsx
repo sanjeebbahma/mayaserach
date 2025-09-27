@@ -5,11 +5,21 @@ import { usePWAInstall } from "./PWAInstallPrompt";
 export default function InstallButton() {
   const { canInstall, isIOS, installApp } = usePWAInstall();
 
+  const handleInstall = async () => {
+    if (isIOS) {
+      // iOS - show instructions
+      alert('To install this app on iOS:\n\n1. Tap the Share button 📤\n2. Scroll down and tap "Add to Home Screen"\n3. Tap "Add" to confirm');
+    } else {
+      // Android/Chrome
+      await installApp();
+    }
+  };
+
   if (!canInstall) return null;
 
   return (
     <button
-      onClick={installApp}
+      onClick={handleInstall}
       className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 transform hover:scale-105 shadow-lg"
     >
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

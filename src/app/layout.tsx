@@ -25,8 +25,6 @@ export const metadata: Metadata = {
     apple: "/favicon.jpg",
   },
   manifest: "/manifest.json",
-  themeColor: "#ba160a",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -43,6 +41,14 @@ export const metadata: Metadata = {
     title: "Maya Search Engine - Fast, Private & Comprehensive Web Search",
     description: "Maya Search Engine provides fast, private, and comprehensive web search results. Search the web with advanced filtering, image search, video search, and more.",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#ba160a",
 };
 
 export default function RootLayout({

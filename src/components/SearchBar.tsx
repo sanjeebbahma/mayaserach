@@ -1,13 +1,14 @@
 "use client";
 
-import { Search, Mic, MicOff, X } from "lucide-react";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { Search, Mic, MicOff, X, Image } from "lucide-react";
+import { useState, useEffect, useRef, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getSuggestions } from "@/lib/search";
 import VoiceSearch from "./VoiceSearch";
 
-export default function SearchBar() {
+function SearchBarContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [searchValue, setSearchValue] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -15,6 +16,16 @@ export default function SearchBar() {
   const [isLoading, setIsLoading] = useState(false);
   const [showVoiceSearch, setShowVoiceSearch] = useState(false);
   const [isVoiceListening, setIsVoiceListening] = useState(false);
+  const [isImageMode, setIsImageMode] = useState(false);
+  
+  // Get current category from URL or localStorage
+  const currentCategory = searchParams.get('category') || 'general';
+  
+  // Check for image mode on component mount
+  useEffect(() => {
+    const searchMode = localStorage.getItem('searchMode');
+    setIsImageMode(searchMode === 'images');
+  }, []);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -149,10 +160,18 @@ export default function SearchBar() {
     const searchQuery = query || searchValue;
     if (searchQuery.trim()) {
       console.log("Searching for:", searchQuery);
-      // Navigate to search results page
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      // Navigate to search results page with current category or image mode
+      const category = isImageMode ? 'images' : currentCategory;
+      const categoryParam = category !== 'general' ? `&category=${category}` : '';
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}${categoryParam}`);
       setShowSuggestions(false);
     }
+  };
+
+  // Back to text search
+  const backToTextSearch = () => {
+    localStorage.removeItem('searchMode');
+    setIsImageMode(false);
   };
 
   // Clear search
@@ -240,7 +259,11 @@ export default function SearchBar() {
     <div className="w-full min-w-0">
       <div className="relative">
         <div className="flex items-center border-3 rounded-full px-2 sm:px-4 py-1.5 sm:py-2.5 bg-white shadow-lg hover:shadow-xl transition-all duration-300" style={{ borderColor: '#ba160a' }}>
-          <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
+          {currentCategory === 'images' || isImageMode ? (
+            <Image className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
+          ) : (
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
+          )}
           <input
             ref={inputRef}
             type="text"
@@ -248,7 +271,7 @@ export default function SearchBar() {
             onChange={handleInputChange}
             onKeyDown={handleKeyDown}
             onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-            placeholder="Search the web, images, videos, news and more..."
+            placeholder={currentCategory === 'images' || isImageMode ? "Search images..." : "Search the web, images, videos, news and more..."}
             className="flex-1 min-w-0 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-base sm:text-lg"
             autoComplete="off"
           />
@@ -285,6 +308,19 @@ export default function SearchBar() {
             <Search className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
+
+        {/* Back to Text Search Button - Only show in image mode on home page */}
+        {isImageMode && !searchParams.get('q') && (
+          <div className="mt-3 flex justify-center">
+            <button
+              onClick={backToTextSearch}
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800 bg-gray-100 hover:bg-gray-200 rounded-full transition-all duration-200 flex items-center space-x-2"
+            >
+              <Search className="w-4 h-4" />
+              <span>Back to Text Search</span>
+            </button>
+          </div>
+        )}
 
         {/* Enhanced Suggestions List with Unique Design */}
         {showSuggestions && suggestions.length > 0 && (
@@ -467,5 +503,27 @@ export default function SearchBar() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function SearchBar() {
+  return (
+    <Suspense fallback={
+      <div className="w-full min-w-0">
+        <div className="relative">
+          <div className="flex items-center border-3 rounded-full px-2 sm:px-4 py-1.5 sm:py-2.5 bg-white shadow-lg" style={{ borderColor: '#ba160a' }}>
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-4 flex-shrink-0" style={{ color: '#ba160a' }} />
+            <input
+              type="text"
+              placeholder="Search the web, images, videos, news and more..."
+              className="flex-1 min-w-0 outline-none text-gray-700 placeholder-gray-400 bg-transparent text-base sm:text-lg"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+    }>
+      <SearchBarContent />
+    </Suspense>
   );
 }

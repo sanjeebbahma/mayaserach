@@ -59,10 +59,8 @@ export function usePWAInstall() {
       }
       
       setDeferredPrompt(null);
-    } else if (isIOS) {
-      // iOS - show instructions
-      setShowInstallPrompt(true);
     }
+    // Note: iOS instructions are handled by the main component
   };
 
   return {

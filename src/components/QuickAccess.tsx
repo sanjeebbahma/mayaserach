@@ -1,14 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function QuickAccess() {
+  const router = useRouter();
   const [showPopup, setShowPopup] = useState(false);
   const [popupApp, setPopupApp] = useState<string>("");
   const apps = [
     { name: "Scrolllink", icon: "/apps/scrolllink.jpg", url: "https://scrolllink.com/" },
     { name: "MayoTube", icon: "/apps/mayotube.jpg", url: "https://mayotube.mayaworldweb.com/" },
-    { name: "Images", icon: null, url: null },
+    { name: "Images", icon: "/apps/images_app.jpg", url: null, searchCategory: "images" },
     { name: "NewsLiveNow", icon: "/apps/newslivenow.jpg", url: "https://newslivenow.com/" },
     { name: "MayoAI", icon: null, url: null },
     { name: "MayoPedia", icon: "/apps/mayopedia.jpg", url: null, comingSoon: true },
@@ -24,6 +26,10 @@ export default function QuickAccess() {
     } else if (app.comingSoon) {
       setPopupApp(app.name);
       setShowPopup(true);
+    } else if (app.searchCategory) {
+      // Set image mode in localStorage and reload page
+      localStorage.setItem('searchMode', 'images');
+      window.location.reload();
     }
   };
 
