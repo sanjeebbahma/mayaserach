@@ -1,6 +1,7 @@
 "use client";
 
 import { User, ShoppingBag, Mail, Zap, MessageCircle, Menu } from "lucide-react";
+import InstallButton from "./InstallButton";
 
 export default function Header() {
   return (
@@ -17,8 +18,9 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Right side - AI Mode, Chat, and Menu */}
+        {/* Right side - Install App, AI Mode, Chat, and Menu */}
         <div className="flex items-center space-x-2">
+          <InstallButton />
           <div className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 cursor-pointer transition-all duration-300 hover:scale-105" title="AI Mode">
             <Zap className="w-5 h-5" style={{ color: '#ba160a' }} />
           </div>
@@ -48,6 +50,7 @@ export default function Header() {
           </div>
         </div>
         <div className="flex items-center space-x-4 lg:space-x-8">
+          <InstallButton />
           <div className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-all duration-300 hover:scale-105">
             <Zap className="w-5 h-5 lg:w-6 lg:h-6" style={{ color: '#ba160a' }} />
             <span className="font-medium text-sm lg:text-base" style={{ color: '#ba160a' }}>AI Mode</span>
