@@ -9,6 +9,31 @@ import Footer from "@/components/Footer";
 import { Clock, Globe, ExternalLink, ChevronLeft, ChevronRight, Filter, Grid, List, Zap, Search, Image, Play, Newspaper, Users, Youtube, Instagram, Facebook, Home, X } from "lucide-react";
 import StreamingText, { StreamingNumber } from "@/components/StreamingText";
 
+// Function to update page title based on search query
+function updatePageTitle(query: string, category: string) {
+  if (!query) {
+    document.title = "Maya Search Engine - Fast, Private & Comprehensive Web Search";
+    return;
+  }
+
+  const categoryLabels = {
+    [SEARCH_CATEGORIES.GENERAL]: "Search",
+    [SEARCH_CATEGORIES.IMAGES]: "Images",
+    [SEARCH_CATEGORIES.VIDEOS]: "Videos", 
+    [SEARCH_CATEGORIES.NEWS]: "News",
+    [SEARCH_CATEGORIES.MAPS]: "Maps",
+    [SEARCH_CATEGORIES.MUSIC]: "Music",
+    [SEARCH_CATEGORIES.IT]: "IT",
+    [SEARCH_CATEGORIES.SCIENCE]: "Science",
+    [SEARCH_CATEGORIES.FILES]: "Files",
+    [SEARCH_CATEGORIES.SOCIAL_MEDIA]: "Social Media"
+  };
+
+  const categoryLabel = categoryLabels[category as keyof typeof categoryLabels] || "Search";
+  const title = `${query} - ${categoryLabel} | Maya Search Engine`;
+  document.title = title;
+}
+
 // Video result component for Videos category
 function VideoResultItem({ result, index, isLoading }: { 
   result: SearchResult; 
@@ -681,6 +706,11 @@ function SearchPageContent() {
       performSearch(query, initialPage);
     }
   }, [query, initialPage, performSearch]);
+
+  // Update page title when query or category changes
+  useEffect(() => {
+    updatePageTitle(query, category);
+  }, [query, category]);
 
   const handlePageChange = (page: number) => {
     // Update URL with page number
