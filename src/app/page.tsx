@@ -5,6 +5,7 @@ import MayaLogo from "@/components/MayaLogo";
 import SearchBar from "@/components/SearchBar";
 import QuickAccess from "@/components/QuickAccess";
 import Footer from "@/components/Footer";
+import InstallBanner from "@/components/InstallBanner";
 
 export default function Home() {
   return (
@@ -20,6 +21,9 @@ export default function Home() {
       </div>
 
       <Header />
+      
+      {/* Install Banner */}
+      <InstallBanner />
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 relative z-10">

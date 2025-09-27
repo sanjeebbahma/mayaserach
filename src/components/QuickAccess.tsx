@@ -12,12 +12,12 @@ export default function QuickAccess() {
     { name: "MayoTube", icon: "/apps/mayotube.jpg", url: "https://mayotube.mayaworldweb.com/" },
     { name: "Images", icon: "/apps/images_app.jpg", url: null, searchCategory: "images" },
     { name: "NewsLiveNow", icon: "/apps/newslivenow.jpg", url: "https://newslivenow.com/" },
-    { name: "MayoAI", icon: null, url: null },
+    { name: "MayoAI", icon: "/apps/mayoAi.jpg", url: null, comingSoon: true },
     { name: "MayoPedia", icon: "/apps/mayopedia.jpg", url: null, comingSoon: true },
     { name: "BigXPrime", icon: "/apps/bigxprime.jpg", url: null, comingSoon: true },
-    { name: "MayoMaps", icon: null, url: null },
-    { name: "MayoBooks", icon: null, url: null },
-    { name: "MayoForums", icon: null, url: null }
+    { name: "MayoMaps", icon: "/apps/mayomaps.jpg", url: null, comingSoon: true },
+    { name: "MayoBooks", icon: "/apps/mayobooks.jpg", url: null, comingSoon: true },
+    { name: "MayoForums", icon: "/apps/mayofourms.jpg", url: null, comingSoon: true }
   ];
 
   const handleAppClick = (app: typeof apps[0]) => {
