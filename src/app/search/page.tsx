@@ -667,12 +667,9 @@ function SearchPageContent() {
     setError(null);
 
     try {
-      // For general category, always request page 1 to get all results
-      const requestPage = category === SEARCH_CATEGORIES.GENERAL ? 1 : page;
-      
       const results = await search({
         q: searchQuery.trim(),
-        pageno: requestPage,
+        pageno: page,
         categories: category,
         // Remove engine restriction to allow all engines
         language: 'en',
