@@ -1,9 +1,10 @@
 "use client";
 
-import { Search, Mic, X } from "lucide-react";
+import { Search, Mic, MicOff, X } from "lucide-react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { getSuggestions } from "@/lib/search";
+import VoiceSearch from "./VoiceSearch";
 
 export default function SearchBar() {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function SearchBar() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [isLoading, setIsLoading] = useState(false);
+  const [showVoiceSearch, setShowVoiceSearch] = useState(false);
+  const [isVoiceListening, setIsVoiceListening] = useState(false);
   
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
@@ -161,6 +164,32 @@ export default function SearchBar() {
     inputRef.current?.focus();
   };
 
+  // Handle voice search transcript
+  const handleVoiceTranscript = (transcript: string) => {
+    setSearchValue(transcript);
+    setShowVoiceSearch(false);
+    setShowSuggestions(false);
+    // Auto-trigger search with voice transcript
+    handleSearch(transcript);
+  };
+
+  // Handle voice search error
+  const handleVoiceError = (error: string) => {
+    // Only log meaningful errors, not "aborted" which is normal
+    if (!error.includes('aborted') && !error.includes('stopped')) {
+      console.error('Voice search error:', error);
+    }
+    // Optionally show error to user
+  };
+
+  // Toggle voice search modal
+  const toggleVoiceSearch = () => {
+    setShowVoiceSearch(!showVoiceSearch);
+    if (!showVoiceSearch) {
+      setShowSuggestions(false);
+    }
+  };
+
   // Highlight matching text in suggestions
   const highlightText = (text: string, query: string) => {
     if (!query.trim()) return text;
@@ -194,6 +223,19 @@ export default function SearchBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Keyboard shortcut for voice search (Ctrl/Cmd + Shift + V)
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key === 'V') {
+        event.preventDefault();
+        toggleVoiceSearch();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className="w-full min-w-0">
       <div className="relative">
@@ -220,11 +262,19 @@ export default function SearchBar() {
             </button>
           )}
           <button 
-            onClick={() => handleSearch()}
-            className="ml-2 sm:ml-4 p-1 sm:p-2 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 cursor-pointer"
-            title="Voice search"
+            onClick={toggleVoiceSearch}
+            className={`ml-2 sm:ml-4 p-1 sm:p-2 rounded-full transition-all duration-300 flex-shrink-0 cursor-pointer ${
+              isVoiceListening 
+                ? 'bg-red-100 text-red-600 animate-pulse' 
+                : 'hover:bg-gray-100'
+            }`}
+            title="Voice search (Ctrl+Shift+V)"
           >
-            <Mic className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#ba160a' }} />
+            {isVoiceListening ? (
+              <MicOff className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#ba160a' }} />
+            ) : (
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#ba160a' }} />
+            )}
           </button>
           <button 
             onClick={() => handleSearch()}
@@ -376,6 +426,43 @@ export default function SearchBar() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Voice Search Modal */}
+        {showVoiceSearch && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[10000] flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden voice-modal-appear">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-gray-200">
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-red-500 to-pink-500 rounded-full flex items-center justify-center">
+                    <Mic className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Voice Search</h2>
+                    <p className="text-sm text-gray-500">Speak your search query</p>
+                    <p className="text-xs text-gray-400 mt-1">Press Ctrl+Shift+V to open voice search</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowVoiceSearch(false)}
+                  className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+
+              {/* Voice Search Component */}
+              <div className="p-6">
+                <VoiceSearch
+                  onTranscript={handleVoiceTranscript}
+                  onError={handleVoiceError}
+                  isListening={isVoiceListening}
+                  onListeningChange={setIsVoiceListening}
+                />
+              </div>
+            </div>
           </div>
         )}
       </div>

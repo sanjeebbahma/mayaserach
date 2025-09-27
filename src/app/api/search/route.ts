@@ -127,13 +127,8 @@ export async function GET(request: NextRequest) {
 
     const data: SearchResponse = await response.json();
 
-    // Filter results to include Google, Wikipedia, and Wikidata engines, and exclude specific Quora links
+    // Filter results to exclude only specific Quora links, allow all other engines
     const filteredResults = data.results.filter((result) => {
-      // Include Google, Wikipedia, and Wikidata engine results
-      if (!["google", "wikipedia", "wikidata"].includes(result.engine)) {
-        return false;
-      }
-
       const url = result.url.toLowerCase();
 
       // Exclude specific Quora links only

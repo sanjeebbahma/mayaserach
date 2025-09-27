@@ -449,7 +449,7 @@ function SearchPageContent() {
         q: searchQuery.trim(),
         pageno: page,
         categories: category,
-        engines: 'google,wikipedia,wikidata', // Include Wikipedia and Wikidata
+        // Remove engine restriction to allow all engines
         language: 'en',
         safesearch: 1
       });

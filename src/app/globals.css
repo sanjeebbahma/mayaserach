@@ -247,3 +247,174 @@ body {
 .count-up {
   animation: countUp 0.8s ease-out;
 }
+
+/* Voice Search Animations */
+@keyframes voicePulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+.voice-pulse {
+  animation: voicePulse 2s infinite;
+}
+
+@keyframes voiceWave {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+.voice-wave {
+  animation: voiceWave 1.5s ease-out infinite;
+}
+
+@keyframes voiceListening {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+}
+
+.voice-listening {
+  animation: voiceListening 1s ease-in-out infinite;
+}
+
+@keyframes audioLevel {
+  0% {
+    height: 20%;
+  }
+  50% {
+    height: 80%;
+  }
+  100% {
+    height: 40%;
+  }
+}
+
+.audio-level-bar {
+  animation: audioLevel 0.5s ease-in-out infinite;
+}
+
+@keyframes transcriptSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.transcript-slide-in {
+  animation: transcriptSlideIn 0.4s ease-out;
+}
+
+@keyframes voiceModalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.voice-modal-appear {
+  animation: voiceModalAppear 0.3s ease-out;
+}
+
+@keyframes voiceButtonHover {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.1);
+  }
+}
+
+.voice-button-hover:hover {
+  animation: voiceButtonHover 0.2s ease-out forwards;
+}
+
+/* Voice search status indicators */
+@keyframes processingDots {
+  0%, 20% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  80%, 100% {
+    opacity: 0;
+  }
+}
+
+.processing-dots span:nth-child(1) {
+  animation: processingDots 1.4s infinite;
+}
+
+.processing-dots span:nth-child(2) {
+  animation: processingDots 1.4s infinite 0.2s;
+}
+
+.processing-dots span:nth-child(3) {
+  animation: processingDots 1.4s infinite 0.4s;
+}
+
+/* Voice search error shake */
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(5px);
+  }
+}
+
+.error-shake {
+  animation: errorShake 0.5s ease-in-out;
+}
+
+/* Voice search success checkmark */
+@keyframes successCheck {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-check {
+  animation: successCheck 0.4s ease-out;
+}
