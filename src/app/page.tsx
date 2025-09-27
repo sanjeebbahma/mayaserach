@@ -28,7 +28,7 @@ export default function Home() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-4 relative z-10">
         {/* Mobile-optimized spacing */}
-        <div className="w-full flex flex-col items-center space-y-6 sm:space-y-8">
+        <div className="w-full flex flex-col items-center space-y-6 sm:space-y-8 pt-6 sm:pt-8 md:pt-12">
           <MayaLogo />
           <div className="w-full sm:w-4/5 md:w-3/4 lg:w-1/2 max-w-2xl">
             <SearchBar />

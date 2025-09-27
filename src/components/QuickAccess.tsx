@@ -17,7 +17,12 @@ export default function QuickAccess() {
     { name: "BigXPrime", icon: "/apps/bigxprime.jpg", url: null, comingSoon: true },
     { name: "MayoMaps", icon: "/apps/mayomaps.jpg", url: null, comingSoon: true },
     { name: "MayoBooks", icon: "/apps/mayobooks.jpg", url: null, comingSoon: true },
-    { name: "MayoForums", icon: "/apps/mayofourms.jpg", url: null, comingSoon: true }
+    { name: "MayoForums", icon: "/apps/mayofourms.jpg", url: null, comingSoon: true },
+    { name: "MayoMudra", icon: "/apps/mayomudra.jpg", url: null, comingSoon: true },
+    { name: "Sambhala Radio", icon: "/apps/sambhalaradio.png", url: "https://sambhalasamrajyaradio.com/" },
+    { name: "IKSVP", icon: "/apps/iksvp.jpg", url: "https://iksvp.com/" },
+    { name: "Kaulantak Peeth", icon: "/apps/kaulantakpeeth.jpg", url: "http://kaulantakpeeth.com/" },
+    { name: "Coming Soon", icon: null, url: null, comingSoon: true }
   ];
 
   const handleAppClick = (app: typeof apps[0]) => {

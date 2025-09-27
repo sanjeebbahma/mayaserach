@@ -56,8 +56,8 @@ export default function InstallBanner() {
 
   return (
     <>
-      {/* Compact Install Banner */}
-      <div className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-3 sm:px-4" style={{ backgroundColor: 'red', zIndex: 9999 }}>
+      {/* Compact Install Banner - Mobile Only */}
+      <div className="w-full bg-gradient-to-r from-red-500 to-red-600 text-white py-2 px-3 sm:px-4 md:hidden" style={{ backgroundColor: 'red', zIndex: 9999 }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Left side - Compact message */}
           <div className="flex items-center space-x-2 flex-1 min-w-0">
